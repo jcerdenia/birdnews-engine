@@ -19,7 +19,7 @@ def require_auth(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
         auth = request.authorization
-        print(auth.username, auth.password)
+
         if (
             not auth
             or auth.username != os.getenv("USERNAME")
