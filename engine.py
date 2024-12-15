@@ -14,6 +14,7 @@ class Engine:
 
         total = len(ids)
         print("Got", total, "checklist IDs")
+        publish_count = 0
 
         for i, id in enumerate(ids, 1):
             counter = f"{i}/{total}"
@@ -22,12 +23,17 @@ class Engine:
 
             if data:
                 print(counter, "Writing article for", id)
+
                 content = self.ai.write_article(data)
                 data["content"] = content
 
                 print(counter, "Publishing article", id)
+
                 data["id"] = id
                 self.content.publish(data)
+                publish_count += 1
 
             else:
                 print(counter, "Skipping checklist", id)
+
+        print(publish_count, "articles published")
