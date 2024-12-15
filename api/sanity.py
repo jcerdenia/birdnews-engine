@@ -11,7 +11,8 @@ class SanityAPI:
 
     def __init__(self):
         self.project_id = os.getenv("SANITY_PROJECT_ID")
-        self.headers = {"Authorization": f"Bearer {os.getenv("SANITY_API_KEY")}"}
+        token = os.getenv("SANITY_API_KEY")
+        self.headers = {"Authorization": f"Bearer {token}"}
 
     @property
     def base_url(self):
