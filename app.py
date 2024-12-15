@@ -17,9 +17,9 @@ def main():
     engine.run()
 
 
-@app.route("/ping", methods=["GET"])
-def ping():
-    return "Pong!", 200
+@app.route("/", methods=["GET"])
+def root():
+    return "We are live.", 200
 
 
 @app.route("/run", methods=["POST"])
