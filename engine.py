@@ -1,5 +1,3 @@
-from dotenv import load_dotenv
-
 from service.ai import AIService
 from service.checklist import ChecklistService
 from service.content import ContentService
@@ -7,8 +5,6 @@ from service.content import ContentService
 
 class Engine:
     def __init__(self):
-        load_dotenv()
-
         self.ai = AIService()
         self.checklists = ChecklistService()
         self.content = ContentService()
