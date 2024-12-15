@@ -29,7 +29,3 @@ def run():
     thread.start()
 
     return "Running.", 200
-
-
-if __name__ == "__main__":
-    app.run(debug=True)
