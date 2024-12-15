@@ -42,7 +42,7 @@ class ContentService:
                         "_type": "article",
                         "title": title,
                         "slug": data["id"].lower(),
-                        "body": self.to_blocks(paragraphs),
+                        "body": self._to_blocks(paragraphs),
                         "tags": [data["province"], *data["participants"]],
                         "source": data["source"],
                     }
@@ -51,5 +51,5 @@ class ContentService:
         }
 
     def publish(self, data):
-        body = self.prepare_for_publication(data)
+        body = self._prepare_for_publication(data)
         return self.sanity.mutate(body)
