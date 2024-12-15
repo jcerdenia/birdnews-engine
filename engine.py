@@ -5,13 +5,13 @@ from service.checklist import ChecklistService
 from service.content import ContentService
 
 
-class _Engine:
+class Engine:
     def __init__(self):
         load_dotenv()
 
-        self.ai = AIService
-        self.checklists = ChecklistService
-        self.content = ContentService
+        self.ai = AIService()
+        self.checklists = ChecklistService()
+        self.content = ContentService()
 
     def run(self):
         ids = self.checklists.get_checklist_ids()
@@ -35,6 +35,3 @@ class _Engine:
 
             else:
                 print(counter, "Skipping checklist", id)
-
-
-Engine = _Engine()

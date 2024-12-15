@@ -1,9 +1,9 @@
 from api.groq import GroqAPI
 
 
-class _AIService:
+class AIService:
     def __init__(self):
-        self.groq = GroqAPI
+        self.groq = GroqAPI()
 
     def write_article(self, data):
         prompt = (
@@ -14,6 +14,3 @@ class _AIService:
         )
 
         return self.groq.chat(prompt)
-
-
-AIService = _AIService()

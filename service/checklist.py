@@ -5,11 +5,11 @@ from misc.ebird_scraper import eBirdScraper
 from service.content import ContentService
 
 
-class _ChecklistService:
+class ChecklistService:
     def __init__(self):
-        self.ebird = eBirdAPI
-        self.ebird_scraper = eBirdScraper
-        self.content = ContentService
+        self.ebird = eBirdAPI()
+        self.ebird_scraper = eBirdScraper()
+        self.content = ContentService()
 
     def get_checklist_ids(self):
         data = self.ebird.get_recent_checklists()
@@ -32,6 +32,3 @@ class _ChecklistService:
 
     def get_checklist_detail(self, checklist_id):
         return self.ebird_scraper.get_checklist_detail(checklist_id)
-
-
-ChecklistService = _ChecklistService()

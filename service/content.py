@@ -1,9 +1,9 @@
 from api.sanity import SanityAPI
 
 
-class _ContentService:
+class ContentService:
     def __init__(self):
-        self.sanity = SanityAPI
+        self.sanity = SanityAPI()
 
     def get_last_saved_checklist_id(self):
         query = """
@@ -19,7 +19,7 @@ class _ContentService:
         return source.split("/")[-1]
 
     @staticmethod
-    def to_blocks(paragraphs):
+    def _to_blocks(paragraphs):
         return [
             {
                 "_key": str(i),
@@ -30,7 +30,7 @@ class _ContentService:
             for i, par in enumerate(paragraphs)
         ]
 
-    def prepare_for_publication(self, data):
+    def _prepare_for_publication(self, data):
         content = data["content"]
         paragraphs = [p for p in content.split("\n") if len(p)]
         title = paragraphs.pop(0).replace("**", "").strip()
@@ -53,6 +53,3 @@ class _ContentService:
     def publish(self, data):
         body = self.prepare_for_publication(data)
         return self.sanity.mutate(body)
-
-
-ContentService = _ContentService()

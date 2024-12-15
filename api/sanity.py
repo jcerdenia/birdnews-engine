@@ -6,7 +6,7 @@ import requests
 from misc.decorators import handle_error
 
 
-class _SanityAPI:
+class SanityAPI:
     DATASET = "production"
 
     def __init__(self):
@@ -37,6 +37,3 @@ class _SanityAPI:
         )
 
         return response.json()
-
-
-SanityAPI = _SanityAPI()

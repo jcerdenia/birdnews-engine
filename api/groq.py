@@ -5,7 +5,7 @@ from groq import Groq
 from misc.decorators import handle_error
 
 
-class _GroqAPI:
+class GroqAPI:
     ROLE_USER = "user"
     MODEL_DEFAULT = "llama3-8b-8192"
 
@@ -20,6 +20,3 @@ class _GroqAPI:
         )
 
         return chat_completion.choices[0].message.content
-
-
-GroqAPI = _GroqAPI()

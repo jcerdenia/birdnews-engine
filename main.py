@@ -2,7 +2,8 @@ from engine import Engine
 
 
 def main():
-    Engine.run()
+    engine = Engine()
+    engine.run()
 
 
 main()
