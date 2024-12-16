@@ -11,6 +11,14 @@ class ChecklistService:
         self.ebird_scraper = eBirdScraper()
         self.content = ContentService()
 
+    @staticmethod
+    def is_duplicate(checklist1, checklist2):
+        matches = []
+        for field in ["location", "province", "date", "time"]:
+            matches.append(checklist1.get(field) == checklist2.get(field))
+
+        return all(matches)
+
     def get_checklist_ids(self):
         data = self.ebird.get_recent_checklists()
         processed_ids = self.content.get_recent_processed_checklist_ids()
