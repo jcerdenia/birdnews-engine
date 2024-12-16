@@ -61,15 +61,14 @@ class eBirdScraper:
 
     @staticmethod
     def _parse_participants(soup):
-        return {
-            "participants": [
-                p.get_text().title()
-                for p in soup.find_all(
-                    "span",
-                    attrs={"data-participant-userdisplayname": True},
-                )
-            ]
-        }
+        participants = []
+        for p in soup.find_all(
+            "span", attrs={"data-participant-userdisplayname": True}
+        ):
+            text = p.get_text()
+            participants.append(text.title() if text.islower() else text)
+
+        return {"participants": participants}
 
     @staticmethod
     def _parse_observations(soup):
