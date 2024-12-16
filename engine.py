@@ -35,7 +35,7 @@ class Engine:
             id = data.pop("id")
             source = data.pop("source")
 
-            print(f"[{i}/{total}]", f"{id}: writing article.")
+            print(f"[{i}/{len(checklists)}]", f"{id}: writing article.")
             content = self.ai.write_article(data)
             data.update(content=content, source=source, id=id)
 
