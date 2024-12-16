@@ -22,7 +22,7 @@ def root():
 
 
 @app.route("/ping", methods=["GET"])
-def root():
+def ping():
     return "Pong!", 200
 
 
