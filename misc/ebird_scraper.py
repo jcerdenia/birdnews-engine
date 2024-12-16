@@ -127,9 +127,13 @@ class eBirdScraper:
         for key in self.EFFORT_KEYS:
             try:
                 string = re.compile(key.capitalize())
-                span = section.find("span", string=string).find_next()
-                value = span.get_text() if span else None
-                details[key] = int(value) if value.isdigit() else value
+                span = section.find("span", string=string)
+                if not span:
+                    continue
+
+                next_span = span.find_next()
+                value = next_span.get_text(strip=True) if next_span else None
+                details[key] = int(value) if value and value.isdigit() else value
             except Exception as e:
                 print(f"Error parsing {key}: {e}")
 
