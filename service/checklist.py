@@ -13,17 +13,20 @@ class ChecklistService:
 
     def get_checklist_ids(self):
         data = self.ebird.get_recent_checklists()
-        last_saved_id = self.content.get_last_saved_checklist_id()
+        processed_ids = self.content.get_recent_processed_checklist_ids()
 
         checklist_ids = []
 
         for item in data:
-            is_today = (
+            if item["subId"] in processed_ids:
+                continue
+
+            is_from_today = (
                 datetime.strptime(item["obsDt"], "%d %b %Y").date()
                 == datetime.today().date()
             )
 
-            if item["subId"] == last_saved_id or not is_today:
+            if not is_from_today:
                 break
 
             checklist_ids.append(item["subId"])

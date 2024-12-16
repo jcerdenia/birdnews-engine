@@ -12,17 +12,16 @@ class ContentService:
     def __init__(self):
         self.sanity = SanityAPI()
 
-    def get_last_saved_checklist_id(self):
+    def get_recent_processed_checklist_ids(self):
         query = """
-        *[_type == 'article'] 
-        | order(_createdAt desc) { 
-            source 
-        }[0]['source']
+        *[_type == 'article' && dateTime(_createdAt) > dateTime(now()) - 60*60*24] 
+        | order(_createdAt desc) {
+            source
+        }['source']
         """
 
         data = self.sanity.query(query)
-        source = data["result"]
-        return source.split("/")[-1]
+        return [source.split("/")[-1] for source in data["result"]]
 
     @staticmethod
     def _to_blocks(paragraphs):
