@@ -21,6 +21,11 @@ def root():
     return "We are live.", 200
 
 
+@app.route("/ping", methods=["GET"])
+def root():
+    return "Pong!", 200
+
+
 @app.route("/run", methods=["POST"])
 @require_auth
 def run():
