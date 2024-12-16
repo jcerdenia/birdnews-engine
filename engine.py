@@ -1,3 +1,4 @@
+from misc.utils import Colors
 from service.ai import AIService
 from service.checklist import ChecklistService
 from service.content import ContentService
@@ -13,27 +14,31 @@ class Engine:
         ids = self.checklists.get_checklist_ids()
 
         total = len(ids)
-        print("Got", total, "checklist IDs")
-        publish_count = 0
+        print("Got", total, "checklist IDs.")
 
+        checklists = []
         for i, id in enumerate(ids, 1):
-            counter = f"{i}/{total}"
-            print(counter, "Fetching checklist", id)
-            data = self.checklists.get_checklist_detail(id)
-
-            if data:
-                print(counter, "Writing article for", id)
-
-                content = self.ai.write_article(data)
-                data["content"] = content
-
-                print(counter, "Publishing article", id)
-
-                data["id"] = id
-                self.content.publish(data)
-                publish_count += 1
-
+            print(f"[{i}/{total}]", f"{id}: reading checklist.")
+            if checklist := self.checklists.get_checklist_detail(id):
+                checklists.append(checklist)
             else:
-                print(counter, "Skipping checklist", id)
+                print(f"[{i}/{total}]", f"{id}: skipping incomplete checklist.")
 
-        print(publish_count, "articles published")
+        print("Got", len(checklists), "complete checklists.")
+
+        articles = []
+        for i, checklist in enumerate(checklists, 1):
+            id = checklist.pop("id")
+            source = checklist.pop("source")
+
+            print(f"[{i}/{total}]", f"{id}: writing article.")
+            content = self.ai.write_article(checklist)
+            checklist.update(content=content, source=source, id=id)
+
+            articles.append(checklist)
+
+        print("Created", len(articles), "articles.")
+
+        if self.content.publish(*articles):
+            color = Colors.green if len(articles) else Colors.yellow
+            print(color("Published", len(articles), "articles."))

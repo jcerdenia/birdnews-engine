@@ -35,28 +35,24 @@ class ContentService:
             for i, par in enumerate(paragraphs)
         ]
 
-    def _prepare_for_publication(self, data):
+    def _format_to_publish(self, data):
         content = data.pop("content")
         paragraphs = [p for p in content.split("\n") if len(p)]
         title = paragraphs.pop(0).replace("**", "").strip()
 
         return {
-            "mutations": [
-                {
-                    self.KEY_CREATE: {
-                        "_type": self.TYPE_ARTICLE,
-                        "title": title,
-                        "slug": f"{data['id'].lower()}-{slugify(title)}",
-                        "body": self._to_blocks(paragraphs),
-                        "tags": [data["province"], *data["participants"]],
-                        "source": data["source"],
-                        "metadata": json.dumps(data),
-                    }
-                }
-            ]
+            self.KEY_CREATE: {
+                "_type": self.TYPE_ARTICLE,
+                "title": title,
+                "slug": f"{data['id'].lower()}-{slugify(title)}",
+                "body": self._to_blocks(paragraphs),
+                "tags": [data["province"], *data["participants"]],
+                "source": data["source"],
+                "metadata": json.dumps(data),
+            }
         }
 
     @handle_error
-    def publish(self, data):
-        body = self._prepare_for_publication(data)
+    def publish(self, *args):
+        body = {"mutations": [self._format_to_publish(data) for data in args]}
         return self.sanity.mutate(body)

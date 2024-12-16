@@ -141,7 +141,7 @@ class eBirdScraper:
     def _parse_general_details(self, ele):
         return self._parse(ele, self.general_detail_parsers)
 
-    def _scrape_checklist(self, url, content):
+    def _scrape_checklist(self, content):
         soup = BeautifulSoup(content, "html.parser")
 
         checklist_type = self._parse_checklist_type(soup)
@@ -156,15 +156,19 @@ class eBirdScraper:
             **primary_details,
             **effort_details,
             **general_details,
-            "source": url,
         }
 
     def _get_checklist_page(self, checklist_id):
         url = f"{self.BASE_URL}/{checklist_id}"
         response = requests.get(url)
-        return url, response.content
+        return response.content, url
 
     @handle_error
     def get_checklist_detail(self, checklist_id):
-        url, content = self._get_checklist_page(checklist_id)
-        return self._scrape_checklist(url, content)
+        content, url = self._get_checklist_page(checklist_id)
+        result = self._scrape_checklist(content)
+
+        if isinstance(result, dict):
+            result.update(source=url, id=checklist_id)
+
+        return result
