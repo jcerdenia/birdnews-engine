@@ -11,11 +11,6 @@ app = Flask(__name__)
 load_dotenv()
 
 
-def main():
-    engine = Engine()
-    engine.run()
-
-
 @app.route("/", methods=["GET"])
 def root():
     return "We are live.", 200
@@ -29,7 +24,24 @@ def ping():
 @app.route("/run", methods=["POST"])
 @require_auth
 def run():
-    thread = threading.Thread(target=main)
+    def task():
+        engine = Engine()
+        engine.run()
+
+    thread = threading.Thread(target=task)
     thread.start()
 
     return "Running.", 200
+
+
+@app.route("/sweep", methods=["POST"])
+@require_auth
+def sweep():
+    def task():
+        engine = Engine()
+        engine.sweep_duplicates()
+
+    thread = threading.Thread(target=task)
+    thread.start()
+
+    return "Sweeping.", 200

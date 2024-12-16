@@ -46,3 +46,26 @@ class Engine:
         if self.content.publish(*articles):
             color = Colors.green if len(articles) else Colors.yellow
             print(color("Published", len(articles), "articles."))
+
+    def sweep_duplicates(self):
+        items = self.content.get_published_data_from_last_24h()
+        ids_to_delete = []
+
+        for i, item in enumerate(items):
+            try:
+                next_item = items[i + 1]
+                if self.checklists.is_duplicate(
+                    item["metadata"],
+                    next_item["metadata"],
+                ):
+                    ids_to_delete.append(item["id"])
+            except IndexError:
+                pass
+            except Exception as e:
+                print(Colors.red(f"Error processing {item['id']}:", e))
+
+        print("Found", len(ids_to_delete), "duplicates.")
+
+        if self.content.delete_by_id(*ids_to_delete):
+            color = Colors.green if len(ids_to_delete) else Colors.yellow
+            print(color("Deleted", len(ids_to_delete), "duplicates."))

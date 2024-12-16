@@ -7,6 +7,7 @@ from misc.utils import slugify
 
 class ContentService:
     KEY_CREATE = "create"
+    KEY_DELETE = "delete"
     TYPE_ARTICLE = "article"
 
     def __init__(self):
@@ -22,6 +23,33 @@ class ContentService:
 
         data = self.sanity.query(query)
         return [source.split("/")[-1] for source in data["result"]]
+
+    def get_published_data_from_last_24h(self):
+        query = """
+        *[_type == 'article' && dateTime(_createdAt) > dateTime(now()) - 60*60*24] 
+        | order(_createdAt desc) {
+            _id,
+            slug,
+            metadata
+        }
+        """
+
+        data = self.sanity.query(query)
+
+        unpacked = []
+        for d in data["result"]:
+            if "drafts" not in d["_id"]:
+                metadata = json.loads(d["metadata"])
+                unpacked.append(
+                    {
+                        "id": d["_id"],
+                        "slug": d["slug"],
+                        "datetime": f"{metadata['date']} {metadata['time']}",
+                        "metadata": metadata,
+                    }
+                )
+
+        return sorted(unpacked, key=lambda d: d["datetime"], reverse=True)
 
     @staticmethod
     def _to_blocks(paragraphs):
@@ -55,4 +83,9 @@ class ContentService:
     @handle_error
     def publish(self, *args):
         body = {"mutations": [self._format_to_publish(data) for data in args]}
+        return self.sanity.mutate(body)
+
+    @handle_error
+    def delete_by_id(self, *args):
+        body = {"mutations": [{self.KEY_DELETE: {"id": id}}] for id in args}
         return self.sanity.mutate(body)
