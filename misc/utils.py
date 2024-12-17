@@ -1,5 +1,7 @@
 import re
 import unicodedata
+from datetime import datetime, timedelta
+from zoneinfo import ZoneInfo
 
 
 class Colors:
@@ -17,3 +19,11 @@ def slugify(text, separator="-"):
     text = re.sub(r"[-\s]+", separator, text).strip(separator)
 
     return text
+
+
+def is_from_last_24h(iso_datetime_str):
+    tz = ZoneInfo("Asia/Manila")
+    dt_obj = datetime.strptime(iso_datetime_str, "%Y-%m-%d %H:%M").replace(tzinfo=tz)
+    cutoff = datetime.now(tz) - timedelta(hours=24)
+
+    return dt_obj > cutoff

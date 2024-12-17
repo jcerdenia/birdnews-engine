@@ -65,17 +65,21 @@ class ContentService:
 
     def _format_to_publish(self, data):
         content = data.pop("content")
+        source = data.pop("source")
+
         paragraphs = [p for p in content.split("\n") if len(p)]
         title = paragraphs.pop(0).replace("**", "").strip()
+        slug = f"{data['id'].lower()}-{slugify(title)}"
+        tags = [data["province"], *data["participants"]]
 
         return {
             self.KEY_CREATE: {
                 "_type": self.TYPE_ARTICLE,
                 "title": title,
-                "slug": f"{data['id'].lower()}-{slugify(title)}",
+                "slug": slug,
                 "body": self._to_blocks(paragraphs),
-                "tags": [data["province"], *data["participants"]],
-                "source": data["source"],
+                "tags": tags,
+                "source": source,
                 "metadata": json.dumps(data),
             }
         }

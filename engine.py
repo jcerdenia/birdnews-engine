@@ -7,8 +7,8 @@ from service.content import ContentService
 class Engine:
     def __init__(self):
         self.ai = AIService()
-        self.checklists = ChecklistService()
         self.content = ContentService()
+        self.checklists = ChecklistService(self.content)
 
     def run(self):
         ids = self.checklists.get_checklist_ids()
@@ -42,7 +42,6 @@ class Engine:
             articles.append(data)
 
         print("Created", len(articles), "articles.")
-
         if self.content.publish(*articles):
             color = Colors.green if len(articles) else Colors.yellow
             print(color("Published", len(articles), "articles."))
