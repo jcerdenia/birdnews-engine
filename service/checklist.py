@@ -22,7 +22,7 @@ class ChecklistService:
     @staticmethod
     def same_difference(checklist, publication):
         comparison_map = [
-            ("isoObsDt", "datetime"),
+            ("isoObsDate", "datetime"),
             ("loc.name", "metadata.location"),
             ("loc.subnational1Name", "metadata.province"),
         ]
