@@ -7,10 +7,10 @@ class AIService:
 
     def write_article(self, data):
         prompt = (
-            f"Using the given data from an eBird checklist, create a blog story "
-            f"in 3rd person. Keep it simple, factual, and accessible. No fake quotes. "
+            f"Based on the given eBird checklist data, write a blog story "
+            f"in 3rd person. Keep it entertaining but factual. No fake quotes. "
             f"Include a title, but don't label it; just make it a bold header."
-            f"The title should be one memorable phrase. No colons."
+            f"The title should be descriptive and summarize the story."
             f"Make no reference to eBird. {data}"
         )
 
