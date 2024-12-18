@@ -5,7 +5,7 @@ import requests
 from misc.decorators import handle_error
 
 
-class eBirdAPI:
+class EBirdAPI:
     CHECKLISTS_URL = "https://api.ebird.org/v2/product/lists/PH"
 
     def __init__(self):

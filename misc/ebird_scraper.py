@@ -6,7 +6,7 @@ from bs4 import BeautifulSoup
 from misc.decorators import handle_error
 
 
-class eBirdScraper:
+class EBirdScraper:
     BASE_URL = "https://ebird.org/checklist"
 
     EFFORT_COMPLETE = "complete"

@@ -1,14 +1,14 @@
 import pydash
 
-from api.ebird import eBirdAPI
-from misc.ebird_scraper import eBirdScraper
+from api.ebird import EBirdAPI
+from misc.ebird_scraper import EBirdScraper
 from misc.utils import is_from_last_24h
 
 
 class ChecklistService:
     def __init__(self, content_service):
-        self.ebird = eBirdAPI()
-        self.ebird_scraper = eBirdScraper()
+        self.ebird = EBirdAPI()
+        self.ebird_scraper = EBirdScraper()
         self.content = content_service
 
     @staticmethod
