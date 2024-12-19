@@ -41,8 +41,7 @@ class Engine:
 
             articles.append(data)
 
-        print("Created", len(articles), "articles.")
-        if self.content.publish(*articles):
+        if articles and self.content.publish(*articles):
             color = Colors.green if len(articles) else Colors.yellow
             print(color("Published", len(articles), "articles."))
 
@@ -65,6 +64,6 @@ class Engine:
 
         print("Found", len(ids_to_delete), "duplicates.")
 
-        if self.content.delete_by_id(*ids_to_delete):
+        if ids_to_delete and self.content.delete_by_id(*ids_to_delete):
             color = Colors.green if len(ids_to_delete) else Colors.yellow
             print(color("Deleted", len(ids_to_delete), "duplicates."))
