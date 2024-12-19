@@ -18,13 +18,9 @@ def handle_error(func):
 def require_auth(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
-        auth = request.authorization
+        api_token = request.headers.get("X-API-TOKEN")
 
-        if (
-            not auth
-            or auth.username != os.getenv("USERNAME")
-            or auth.password != os.getenv("PASSWORD")
-        ):
+        if not api_token or api_token != os.getenv("API_TOKEN"):
             abort(401)  # Unauthorized
 
         return f(*args, **kwargs)
