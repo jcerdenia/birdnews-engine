@@ -9,8 +9,9 @@ class AIService:
         prompt = (
             f"Based on the given eBird checklist data, write a blog story "
             f"in 3rd person. Keep it entertaining but factual. No fake quotes. "
-            f"Include a title, but don't label it; just make it a bold header."
-            f"The title should be descriptive and summarize the story."
+            f"Include a title, but don't label it; just make it a bold header. "
+            f"The title should be descriptive and summarize the story. "
+            f"Do not treat the given bird list as chronological. "
             f"Make no reference to eBird. {data}"
         )
 
