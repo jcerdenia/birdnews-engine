@@ -13,17 +13,6 @@ class ContentService:
     def __init__(self):
         self.sanity = SanityAPI()
 
-    def get_recent_processed_checklist_ids(self):
-        query = """
-        *[_type == 'article' && dateTime(_createdAt) > dateTime(now()) - 60*60*24] 
-        | order(_createdAt desc) {
-            source
-        }['source']
-        """
-
-        data = self.sanity.query(query)
-        return [source.split("/")[-1] for source in data["result"]]
-
     def get_published_data_from_last_24h(self):
         query = """
         *[_type == 'article' && dateTime(_createdAt) > dateTime(now()) - 60*60*24] 
