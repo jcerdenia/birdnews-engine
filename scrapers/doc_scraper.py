@@ -21,7 +21,6 @@ class DocScraper(BaseScraper):
 
         if self.separator in lines:
             index = lines.index(self.separator)
-            print("what the hell", lines[index + 1 :])
             return " ".join(lines[index + 1 :])
 
         return " ".join(lines)
