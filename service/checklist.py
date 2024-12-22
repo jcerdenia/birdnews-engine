@@ -1,13 +1,13 @@
 import pydash
 
-from api.ebird import EBirdAPI
-from misc.ebird_scraper import EBirdScraper
+from api import EBirdAPI
 from misc.utils import is_from_last_24h
+from scrapers import EBirdScraper
 
 
 class ChecklistService:
     def __init__(self, content_service):
-        self.ebird = EBirdAPI()
+        self.ebird_api = EBirdAPI()
         self.ebird_scraper = EBirdScraper()
         self.content = content_service
 
@@ -33,7 +33,7 @@ class ChecklistService:
         )
 
     def get_checklist_ids(self):
-        data = self.ebird.get_recent_checklists()
+        data = self.ebird_api.get_recent_checklists()
         publications = self.content.get_published_data_from_last_24h()
         processed_ids = [pydash.get(item, "metadata.id") for item in publications]
 

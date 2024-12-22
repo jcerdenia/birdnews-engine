@@ -1,4 +1,4 @@
-from api.groq import GroqAPI
+from api import GroqAPI
 
 
 class AIService:

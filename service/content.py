@@ -1,6 +1,6 @@
 import json
 
-from api.sanity import SanityAPI
+from api import SanityAPI
 from misc.decorators import handle_error
 from misc.utils import slugify
 
