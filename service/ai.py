@@ -1,18 +1,19 @@
+import os
+
 from api import GroqAPI
+from scrapers import DocScraper
 
 
 class AIService:
     def __init__(self):
         self.groq = GroqAPI()
+        prompt_id = os.getenv("PROMPT_DOCUMENT_ID")
+        self.docs = DocScraper(prompt_id, "BEGIN PROMPT")
+
+    def _get_prompt(self, data):
+        base_prompt = self.docs.get_content()
+        return f"{base_prompt} {data}"
 
     def write_article(self, data):
-        prompt = (
-            f"Based on the given eBird checklist data, write a blog story "
-            f"in 3rd person. Keep it entertaining but factual. No fake quotes. "
-            f"Include a title, but don't label it; just make it a bold header. "
-            f"The title should be descriptive and summarize the story. "
-            f"Do not treat the given bird list as chronological. "
-            f"Make no reference to eBird. {data}"
-        )
-
+        prompt = self._get_prompt(data)
         return self.groq.chat(prompt)

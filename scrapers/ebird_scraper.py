@@ -1,12 +1,13 @@
 import re
 
 import requests
-from bs4 import BeautifulSoup
 
 from misc.decorators import handle_error
 
+from .base_scraper import BaseScraper
 
-class EBirdScraper:
+
+class EBirdScraper(BaseScraper):
     BASE_URL = "https://ebird.org/checklist"
 
     EFFORT_COMPLETE = "complete"
@@ -142,7 +143,7 @@ class EBirdScraper:
         return self._parse(ele, self.general_detail_parsers)
 
     def _scrape_checklist(self, content):
-        soup = BeautifulSoup(content, "html.parser")
+        soup = self.scrape(content)
 
         checklist_type = self._parse_checklist_type(soup)
         if checklist_type.lower() != self.EFFORT_COMPLETE:
