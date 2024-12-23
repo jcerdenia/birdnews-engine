@@ -1,3 +1,3 @@
-# Bird News PH Engine
+# PH Bird News Engine
 
-Content engine for Bird News PH.
+Content engine for PH Bird News
