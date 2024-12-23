@@ -78,7 +78,7 @@ class EBirdScraper(BaseScraper):
         for ele in soup.find_all("section", class_="Observation"):
             species = ele.find("span", class_="Heading-main").get_text()
             if " sp." in species:
-                species = f"unidentified {species}".replace(" .sp.", "").strip()
+                species = f"unidentified {species}".replace(" sp.", "").strip()
 
             count_span = ele.find("span", string=re.compile("Number observed"))
             count = count_span.find_next_sibling("span").get_text(strip=True)
