@@ -5,9 +5,6 @@ from scrapers import DocScraper
 
 
 class AIService:
-    prompt_id = os.getenv("PROMPT_DOCUMENT_ID")
-    prompt_separator = "BEGIN PROMPT"
-
     def __init__(
         self,
         groq_api: GroqAPI,
@@ -15,6 +12,10 @@ class AIService:
     ):
         self.groq = groq_api
         self.docs = doc_scraper
+
+        self.prompt_id = os.getenv("PROMPT_DOCUMENT_ID")
+        self.prompt_separator = "BEGIN PROMPT"
+        self.base_prompt = None
 
     def _set_base_prompt(self):
         self.base_prompt = self.docs.get_content(
