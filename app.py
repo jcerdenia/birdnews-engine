@@ -3,7 +3,6 @@ import threading
 from dotenv import load_dotenv
 from flask import Flask
 
-from engine import main
 from misc.decorators import require_auth
 
 app = Flask(__name__)
@@ -24,6 +23,8 @@ def ping():
 @app.route("/run", methods=["POST"])
 @require_auth
 def run():
+    from engine import main
+
     thread = threading.Thread(target=main)
     thread.start()
 
