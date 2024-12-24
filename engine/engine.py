@@ -1,14 +1,17 @@
 from misc.utils import Colors
-from service.ai import AIService
-from service.checklist import ChecklistService
-from service.content import ContentService
+from service import AIService, ChecklistService, ContentService
 
 
 class Engine:
-    def __init__(self):
-        self.ai = AIService()
-        self.content = ContentService()
-        self.checklists = ChecklistService(self.content)
+    def __init__(
+        self,
+        ai_service: AIService,
+        checklist_service: ChecklistService,
+        content_service: ContentService,
+    ):
+        self.ai = ai_service
+        self.checklists = checklist_service
+        self.content = content_service
 
     def run(self):
         ids = self.checklists.get_checklist_ids()
@@ -44,26 +47,3 @@ class Engine:
         if articles and self.content.publish(*articles):
             color = Colors.green if len(articles) else Colors.yellow
             print(color("Published", len(articles), "articles."))
-
-    def sweep_duplicates(self):
-        items = self.content.get_published_data_from_last_24h()
-        ids_to_delete = []
-
-        for i, item in enumerate(items):
-            try:
-                next_item = items[i + 1]
-                if self.checklists.is_duplicate(
-                    item["metadata"],
-                    next_item["metadata"],
-                ):
-                    ids_to_delete.append(item["id"])
-            except IndexError:
-                pass
-            except Exception as e:
-                print(Colors.red(f"Error processing {item['id']}:", e))
-
-        print("Found", len(ids_to_delete), "duplicates.")
-
-        if ids_to_delete and self.content.delete_by_id(*ids_to_delete):
-            color = Colors.green if len(ids_to_delete) else Colors.yellow
-            print(color("Deleted", len(ids_to_delete), "duplicates."))

@@ -4,7 +4,7 @@ import requests
 
 from misc.decorators import handle_error
 
-from .base_scraper import BaseScraper
+from .base import BaseScraper
 
 
 class EBirdScraper(BaseScraper):
@@ -143,7 +143,7 @@ class EBirdScraper(BaseScraper):
         return self._parse(ele, self.general_detail_parsers)
 
     def _scrape_checklist(self, content):
-        soup = self.scrape(content)
+        soup = self._scrape(content)
 
         checklist_type = self._parse_checklist_type(soup)
         if checklist_type.lower() != self.EFFORT_COMPLETE:

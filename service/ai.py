@@ -5,15 +5,22 @@ from scrapers import DocScraper
 
 
 class AIService:
-    def __init__(self):
-        self.groq = GroqAPI()
-        prompt_id = os.getenv("PROMPT_DOCUMENT_ID")
-        self.docs = DocScraper(prompt_id, "BEGIN PROMPT")
+    prompt_id = os.getenv("PROMPT_DOCUMENT_ID")
+    prompt_separator = "BEGIN PROMPT"
 
-        self._set_base_prompt()
+    def __init__(
+        self,
+        groq_api: GroqAPI,
+        doc_scraper: DocScraper,
+    ):
+        self.groq = groq_api
+        self.docs = doc_scraper
 
     def _set_base_prompt(self):
-        self.base_prompt = self.docs.get_content()
+        self.base_prompt = self.docs.get_content(
+            self.prompt_id,
+            self.prompt_separator,
+        )
 
     def _get_prompt(self, data):
         if not self.base_prompt:

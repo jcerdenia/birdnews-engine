@@ -10,8 +10,8 @@ class ContentService:
     KEY_DELETE = "delete"
     TYPE_ARTICLE = "article"
 
-    def __init__(self):
-        self.sanity = SanityAPI()
+    def __init__(self, sanity_api: SanityAPI):
+        self.sanity = sanity_api
 
     def get_published_data_from_last_24h(self):
         query = """

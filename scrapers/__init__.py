@@ -1,2 +1,6 @@
-from .doc_scraper import DocScraper
-from .ebird_scraper import EBirdScraper
+from .doc import DocScraper
+from .ebird import EBirdScraper
+
+doc_scraper = DocScraper()
+
+ebird_scraper = EBirdScraper()

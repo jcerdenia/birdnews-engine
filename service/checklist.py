@@ -4,20 +4,26 @@ from api import EBirdAPI
 from misc.utils import is_from_last_24h
 from scrapers import EBirdScraper
 
+from .content import ContentService
+
 
 class ChecklistService:
-    def __init__(self, content_service):
-        self.ebird_api = EBirdAPI()
-        self.ebird_scraper = EBirdScraper()
+    def __init__(
+        self,
+        ebird_api: EBirdAPI,
+        ebird_scraper: EBirdScraper,
+        content_service: ContentService,
+    ):
+        self.ebird_api = ebird_api
+        self.ebird_scraper = ebird_scraper
         self.content = content_service
 
     @staticmethod
     def is_duplicate(checklist1, checklist2):
-        matches = []
-        for field in ["location", "province", "date", "time"]:
-            matches.append(checklist1.get(field) == checklist2.get(field))
-
-        return all(matches)
+        return all(
+            checklist1.get(field) == checklist2.get(field)
+            for field in ["location", "province", "date", "time"]
+        )
 
     @staticmethod
     def same_difference(checklist, publication):
