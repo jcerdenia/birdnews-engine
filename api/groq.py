@@ -7,7 +7,7 @@ from misc.decorators import handle_error
 
 class GroqAPI:
     ROLE_USER = "user"
-    MODEL_DEFAULT = "llama3-8b-8192"
+    MODEL_DEFAULT = "llama3-70b-8192"
 
     def __init__(self):
         self.client = Groq(api_key=os.getenv("GROQ_API_KEY"))
