@@ -1,6 +1,6 @@
 import os
 
-from htbuilder import a, body, div, html, p
+from htbuilder import a, body, div, html, p, strong
 
 from api.brevo import BrevoAPI
 from misc.utils import now
@@ -31,7 +31,7 @@ class EmailService:
         digest = []
         for art in articles:
             url = f"https://ph.birdnews.xyz/{art['slug']}"
-            ele = div()(a(href=url)(art["title"]), p()(art["lead"]))
+            ele = div()(strong()(a(href=url)(art["title"])), p()(art["lead"]))
             digest.append(str(ele))
 
         html_content = html()(
@@ -40,8 +40,6 @@ class EmailService:
                 div()("\n".join(digest)),
             )
         )
-
-        print(html_content)
 
         return {
             "subject": subject,
