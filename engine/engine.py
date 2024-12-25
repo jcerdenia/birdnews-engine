@@ -1,5 +1,7 @@
-from misc.utils import Colors
-from service import AIService, ChecklistService, ContentService
+import os
+
+from misc.utils import Colors, now
+from service import AIService, ChecklistService, ContentService, EmailService
 
 
 class Engine:
@@ -8,10 +10,13 @@ class Engine:
         ai_service: AIService,
         checklist_service: ChecklistService,
         content_service: ContentService,
+        email_service: EmailService,
     ):
         self.ai = ai_service
         self.checklists = checklist_service
         self.content = content_service
+        self.emails = email_service
+        self.email_send_hour = os.getenv("EMAIL_SEND_HOUR")
 
     def run(self):
         ids = self.checklists.get_checklist_ids()
@@ -47,3 +52,10 @@ class Engine:
         if articles and self.content.publish(*articles):
             color = Colors.green if len(articles) else Colors.yellow
             print(color("Published", len(articles), "articles."))
+
+        if self.email_send_hour <= now.hour() < (self.email_send_hour + 1):
+            self.send_newsletter()
+
+    def send_newsletter(self):
+        if self.emails.run_campaign():
+            print(Colors.green("Sent newsletter."))

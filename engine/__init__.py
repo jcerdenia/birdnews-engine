@@ -1,4 +1,4 @@
-from service import ai_service, checklist_service, content_service
+from service import ai_service, checklist_service, content_service, email_service
 
 from .engine import Engine
 
@@ -8,6 +8,7 @@ def get_engine():
         ai_service,
         checklist_service,
         content_service,
+        email_service,
     )
 
 

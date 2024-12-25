@@ -5,9 +5,9 @@ from flask import Flask
 
 from misc.decorators import require_auth
 
-app = Flask(__name__)
-
 load_dotenv()
+
+app = Flask(__name__)
 
 
 @app.route("/", methods=["GET"])

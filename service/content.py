@@ -1,4 +1,7 @@
 import json
+import random
+
+import pydash
 
 from api import SanityAPI
 from misc.decorators import handle_error
@@ -12,6 +15,7 @@ class ContentService:
 
     def __init__(self, sanity_api: SanityAPI):
         self.sanity = sanity_api
+        self.publications = None
 
     def get_published_data_from_last_24h(self):
         query = """
@@ -19,6 +23,8 @@ class ContentService:
         | order(_createdAt desc) {
             _id,
             slug,
+            title,
+            body[0],
             metadata
         }
         """
@@ -34,11 +40,50 @@ class ContentService:
                         "id": d["_id"],
                         "slug": d["slug"],
                         "datetime": f"{metadata['date']} {metadata['time']}",
+                        "title": d["title"],
+                        "lead": pydash.get(d, "body.children.0.text"),
                         "metadata": metadata,
                     }
                 )
 
-        return sorted(unpacked, key=lambda d: d["datetime"], reverse=True)
+        self.publications = sorted(
+            unpacked,
+            key=lambda d: d["datetime"],
+            reverse=True,
+        )
+
+        return self.publications
+
+    def curate_articles(self, articles, max_articles=10):
+        # Group articles by region for diversity
+        region_groups = {}
+        for article in articles:
+            region = pydash.get(article, "metadata.province")
+            if region not in region_groups:
+                region_groups[region] = []
+            region_groups[region].append(article)
+
+        # Select one article per region, then fill up to max_articles
+        curated = []
+        for region, region_articles in region_groups.items():
+            # Pick a random article from the region
+            curated.append(random.choice(region_articles))
+
+        # If fewer than max_articles, fill the remaining spots with unique random articles
+        if len(curated) < max_articles:
+            remaining = [a for a in articles if a not in curated]
+            curated.extend(
+                random.sample(
+                    remaining,
+                    min(max_articles - len(curated), len(remaining)),
+                )
+            )
+
+        return sorted(
+            curated[:max_articles],
+            key=lambda d: d["datetime"],
+            reverse=True,
+        )
 
     @staticmethod
     def _to_blocks(paragraphs):

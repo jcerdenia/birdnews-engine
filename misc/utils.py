@@ -3,6 +3,8 @@ import unicodedata
 from datetime import datetime, timedelta
 from zoneinfo import ZoneInfo
 
+TZ = ZoneInfo("Asia/Manila")
+
 
 class Colors:
     _colorize = lambda color, *args: f"\033[{color}m{' '.join(map(str, args))}\033[0m"
@@ -22,8 +24,11 @@ def slugify(text, separator="-"):
 
 
 def is_from_last_24h(iso_datetime_str):
-    tz = ZoneInfo("Asia/Manila")
-    dt_obj = datetime.strptime(iso_datetime_str, "%Y-%m-%d %H:%M").replace(tzinfo=tz)
-    cutoff = datetime.now(tz) - timedelta(hours=24)
+    dt_obj = datetime.strptime(iso_datetime_str, "%Y-%m-%d %H:%M").replace(tzinfo=TZ)
+    cutoff = datetime.now(TZ) - timedelta(hours=24)
 
     return dt_obj > cutoff
+
+
+def now():
+    return datetime.now(TZ)
