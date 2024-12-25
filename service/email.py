@@ -29,7 +29,7 @@ class EmailService:
         digest = [
             f"<div>"
             f'<a href="https://ph.birdnews.xyz/{a["slug"]}">'
-            f"<strong>{a["title"]}</strong></a>"
+            f"<strong>{a['title']}</strong></a>"
             f"<p>{a['lead']}</p>"
             f"</div>"
             for a in articles
