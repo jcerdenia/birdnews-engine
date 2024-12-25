@@ -24,7 +24,7 @@ class EmailService:
             self.content.publications or self.content.get_published_data_from_last_24h()
         )
 
-        subject = f"{self.title}: {now().strftime("%B %d, %Y")}"
+        subject = f"{self.title}: {now().strftime('%B %d, %Y')}"
 
         digest = [
             f"<div>"
