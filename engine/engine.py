@@ -53,7 +53,7 @@ class Engine:
             color = Colors.green if len(articles) else Colors.yellow
             print(color("Published", len(articles), "articles."))
 
-        if self.email_send_hour <= now.hour() < (self.email_send_hour + 1):
+        if self.email_send_hour <= now().hour < (self.email_send_hour + 1):
             self.send_newsletter()
 
     def send_newsletter(self):
