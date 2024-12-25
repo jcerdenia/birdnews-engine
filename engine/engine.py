@@ -16,7 +16,7 @@ class Engine:
         self.checklists = checklist_service
         self.content = content_service
         self.emails = email_service
-        self.email_send_hour = os.getenv("EMAIL_SEND_HOUR")
+        self.email_send_hour = int(os.getenv("EMAIL_SEND_HOUR"))
 
     def run(self):
         ids = self.checklists.get_checklist_ids()
