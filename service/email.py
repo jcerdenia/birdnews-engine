@@ -1,5 +1,7 @@
 import os
 
+from htbuilder import a, body, div, html, p
+
 from api.brevo import BrevoAPI
 from misc.utils import now
 from service.content import ContentService
@@ -26,21 +28,20 @@ class EmailService:
 
         subject = f"{self.title}: {now().strftime('%B %d, %Y')}"
 
-        digest = [
-            f"<div>"
-            f'<a href="https://ph.birdnews.xyz/{a["slug"]}">'
-            f"<strong>{a['title']}</strong></a>"
-            f"<p>{a['lead']}</p>"
-            f"</div>"
-            for a in articles
-        ]
+        digest = []
+        for art in articles:
+            url = f"https://ph.birdnews.xyz/{art['slug']}"
+            ele = div()(a(href=url)(art["title"]), p()(art["lead"]))
+            digest.append(str(ele))
 
-        html_content = (
-            '<html><body style="text-align: left;">'
-            + "<div><p>Birding highlights from the last 24 hours.</p></div>"
-            + "\n".join(digest)
-            + "</body></html>"
+        html_content = html()(
+            body(style="text-align: left;")(
+                div()(p()("Birding highlights from the last 24 hours.")),
+                div()("\n".join(digest)),
+            )
         )
+
+        print(html_content)
 
         return {
             "subject": subject,
@@ -48,7 +49,7 @@ class EmailService:
             "recipients": {"listIds": [self.recipient_list_id]},
             "sender": {"name": self.from_name, "email": self.from_email},
             "reply_to": self.from_email,
-            "html_content": html_content,
+            "html_content": str(html_content),
         }
 
     def run_campaign(self):
