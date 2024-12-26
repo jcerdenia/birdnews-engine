@@ -101,8 +101,8 @@ class ContentService:
         content = data.pop("content")
         source = data.pop("source")
 
-        paragraphs = [p for p in content.split("\n") if len(p)]
-        title = paragraphs.pop(0).replace("**", "").strip()
+        paragraphs = [p.replace("**", "") for p in content.split("\n") if len(p)]
+        title = paragraphs.pop(0).strip()
         slug = f"{data['id'].lower()}-{slugify(title)}"
         tags = [data["province"], *data["participants"]]
 
