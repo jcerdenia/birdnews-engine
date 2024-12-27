@@ -17,8 +17,6 @@ class Engine:
         self.content = content_service
         self.emails = email_service
 
-        self.email_send_hour = int(os.getenv("EMAIL_SEND_HOUR"))
-
     def run(self):
         ids = self.checklists.get_checklist_ids()
 
@@ -54,7 +52,7 @@ class Engine:
             color = Colors.green if len(articles) else Colors.yellow
             print(color("Published", len(articles), "articles."))
 
-        if now().hour == self.email_send_hour:
+        if now().hour == int(os.getenv("EMAIL_SEND_HOUR", 12)):
             self.send_newsletter()
 
     def send_newsletter(self):
