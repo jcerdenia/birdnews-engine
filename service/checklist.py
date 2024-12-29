@@ -8,6 +8,8 @@ from .content import ContentService
 
 
 class ChecklistService:
+    PROCESSING_LIMIT = 15
+
     def __init__(
         self,
         ebird_api: EBirdAPI,
@@ -38,7 +40,7 @@ class ChecklistService:
             for field1, field2 in comparison_map
         )
 
-    def get_checklist_ids(self):
+    def get_checklist_ids(self, limit=PROCESSING_LIMIT):
         data = self.ebird_api.get_recent_checklists()
         publications = self.content.get_published_data_from_last_24h()
         processed_ids = [pydash.get(item, "metadata.id") for item in publications]
@@ -57,7 +59,7 @@ class ChecklistService:
 
             checklist_ids.append(item["subId"])
 
-        return list(reversed(checklist_ids))
+        return list(reversed(checklist_ids))[:limit]
 
     def get_checklist_detail(self, checklist_id):
         return self.ebird_scraper.get_checklist_detail(checklist_id)

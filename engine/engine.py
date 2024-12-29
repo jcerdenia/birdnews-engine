@@ -18,6 +18,7 @@ class Engine:
         self.emails = email_service
 
     def run(self):
+        print("Starting engine...")
         ids = self.checklists.get_checklist_ids()
 
         total = len(ids)
