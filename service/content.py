@@ -66,8 +66,10 @@ class ContentService:
         # Select one article per region, then fill up to max_articles
         curated = []
         for region, region_articles in region_groups.items():
-            # Pick a random article from the region
-            curated.append(random.choice(region_articles))
+            # Prioritize articles that feature me
+            bias = lambda a: "Joshua Cerdenia" in a["metadata"]["participants"]
+            priority_article = pydash.find(region_articles, bias)
+            curated.append(priority_article or random.choice(region_articles))
 
         # If fewer than max_articles, fill the remaining spots with unique random articles
         if len(curated) < max_articles:
