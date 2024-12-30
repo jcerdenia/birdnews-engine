@@ -1,5 +1,3 @@
-import os
-
 import gspread
 import pydash
 from google.auth import default
