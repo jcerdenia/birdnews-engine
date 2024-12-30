@@ -1,6 +1,8 @@
+.DS_Store
 .python-version
-
 .env
-
 __pycache__
 */__pycache__
+
+# Google credentials
+vernal-store-445114-m9-83f4f02dc163.json

@@ -1,27 +1,24 @@
-import os
+import pydash
 
-from api import GroqAPI
-from scrapers import DocScraper
+from api import GroqAPI, SheetsAPI
 
 
 class AIService:
+    PROMPT_WORKSHEET_IDX = 0
+
+    base_prompt = None
+
     def __init__(
         self,
         groq_api: GroqAPI,
-        doc_scraper: DocScraper,
+        sheets_api: SheetsAPI,
     ):
         self.groq = groq_api
-        self.docs = doc_scraper
-
-        self.prompt_id = os.getenv("PROMPT_DOCUMENT_ID")
-        self.prompt_separator = "BEGIN PROMPT"
-        self.base_prompt = None
+        self.sheets = sheets_api
 
     def _set_base_prompt(self):
-        self.base_prompt = self.docs.get_content(
-            self.prompt_id,
-            self.prompt_separator,
-        )
+        data = self.sheets.read(self.PROMPT_WORKSHEET_IDX)
+        self.base_prompt = pydash.get(data, "0.1", "")
 
     def _get_prompt(self, data):
         if not self.base_prompt:
