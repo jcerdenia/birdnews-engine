@@ -2,7 +2,8 @@ import os
 
 import gspread
 import pydash
-from google.oauth2.service_account import Credentials
+from google.auth import default
+from google.auth.transport.requests import Request
 
 from misc.decorators import handle_error
 
@@ -14,10 +15,10 @@ class SheetsAPI:
     ]
 
     def __init__(self, spreadsheet_id):
-        self.credentials = Credentials.from_service_account_file(
-            os.environ.get("SERVICE_ACCOUNT_FILE_PATH"),
-            scopes=self.SCOPES,
-        )
+        self.credentials, _ = default(scopes=self.SCOPES)
+
+        if self.credentials.expired:
+            self.credentials.refresh(Request())
 
         self.gc = gspread.authorize(self.credentials)
         self.spreadsheet = self.gc.open_by_key(spreadsheet_id)
