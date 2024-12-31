@@ -26,13 +26,18 @@ class SheetsAPI:
             return self.spreadsheet.get_worksheet(worksheet_idx)
 
     @handle_error
-    def read(self, worksheet_idx, flatten=False):
+    def clear(self, worksheet_idx, col_idx=1):
         worksheet = self._get_worksheet(worksheet_idx)
-        data = worksheet.get_all_values()
-        return pydash.flatten(data) if flatten else data
+        return worksheet.delete_columns(col_idx)
 
     @handle_error
-    def write(self, worksheet_idx, data, flatten=True):
+    def read(self, worksheet_idx, flat=False):
         worksheet = self._get_worksheet(worksheet_idx)
-        column_data = [[i] for i in data] if flatten else data
-        return worksheet.update(column_data)
+        data = worksheet.get_all_values()
+        return pydash.flatten(data) if flat else data
+
+    @handle_error
+    def append(self, worksheet_idx, data, flat=True):
+        worksheet = self._get_worksheet(worksheet_idx)
+        column_data = [[i] for i in data] if flat else data
+        return worksheet.append_rows(column_data)

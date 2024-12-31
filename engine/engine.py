@@ -25,17 +25,22 @@ class Engine:
         print("Got", total, "checklist IDs.")
 
         checklists = []
+        skipped_checklist_ids = []
+
         for i, id in enumerate(ids, 1):
             print(f"[{i}/{total}]", f"{id}: reading checklist.")
             checklist = self.checklists.get_checklist_detail(id)
 
-            if not checklist:
-                print(f"[{i}/{total}]", f"{id}: skipping incomplete checklist.")
-            elif checklists and self.checklists.is_duplicate(checklist, checklists[-1]):
-                print(f"[{i}/{total}]", f"{id}: skipping duplicate checklist.")
+            if not checklist or (
+                checklists and self.checklists.is_duplicate(checklist, checklists[-1])
+            ):
+                which = "incomplete" if not checklist else "duplicate"
+                print(f"[{i}/{total}]", f"{id}: skipping {which} checklist.")
+                skipped_checklist_ids.append(id)
             else:
                 checklists.append(checklist)
 
+        self.checklists.mark_skipped(skipped_checklist_ids)
         print("Got", len(checklists), "complete checklists.")
 
         articles = []

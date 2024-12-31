@@ -9,7 +9,8 @@ from .content import ContentService
 
 class ChecklistService:
     PROCESSING_LIMIT = 15
-    QUERIED_IDS_WORKSHEET_IDX = 1
+    SKIPPED_IDS_WORKSHEET_IDX = 1
+    CLEAR_SKIPPED_IDS_AT_COUNT = 200
 
     def __init__(
         self,
@@ -46,11 +47,13 @@ class ChecklistService:
     def get_checklist_ids(self, limit=PROCESSING_LIMIT):
         data = self.ebird_api.get_recent_checklists()
         publications = self.content.get_published_data_from_last_24h()
-
         processed_ids = [pydash.get(item, "metadata.id") for item in publications]
-        last_queried_ids = self.sheets.read(self.QUERIED_IDS_WORKSHEET_IDX, True)
-        excluded_ids = list(set(processed_ids + last_queried_ids))
 
+        skipped_ids = self.sheets.read(self.SKIPPED_IDS_WORKSHEET_IDX, True)
+        if len(skipped_ids) >= self.CLEAR_SKIPPED_IDS_AT_COUNT:
+            self.sheets.clear(self.SKIPPED_IDS_WORKSHEET_IDX)
+
+        excluded_ids = list(set(processed_ids + skipped_ids))
         checklist_ids = []
 
         for item in data:
@@ -65,10 +68,10 @@ class ChecklistService:
 
             checklist_ids.append(item["subId"])
 
-        result = list(reversed(checklist_ids))[:limit]
-        self.sheets.write(self.QUERIED_IDS_WORKSHEET_IDX, result)
+        return list(reversed(checklist_ids))[:limit]
 
-        return result
+    def mark_skipped(self, checklist_ids):
+        self.sheets.append(self.SKIPPED_IDS_WORKSHEET_IDX, checklist_ids)
 
     def get_checklist_detail(self, checklist_id):
         return self.ebird_scraper.get_checklist_detail(checklist_id)
