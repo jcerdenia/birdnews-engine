@@ -19,5 +19,6 @@ checklist_service = ChecklistService(
 
 email_service = EmailService(
     brevo_api,
+    ai_service,
     content_service,
 )
