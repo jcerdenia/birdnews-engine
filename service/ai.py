@@ -5,6 +5,7 @@ from api import GroqAPI, SheetsAPI
 
 class AIService:
     PROMPT_WORKSHEET_IDX = 0
+    KEY_ARTICLE = "ARTICLE"
 
     base_prompt = None
 
@@ -18,7 +19,8 @@ class AIService:
 
     def _set_base_prompt(self):
         data = self.sheets.read(self.PROMPT_WORKSHEET_IDX)
-        self.base_prompt = pydash.get(data, "0.1", "")
+        predicate = lambda i: i[0] == self.KEY_ARTICLE
+        self.base_prompt = pydash.find(data, predicate)[1]
 
     def _get_prompt(self, data):
         if not self.base_prompt:
