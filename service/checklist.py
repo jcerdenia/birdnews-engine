@@ -10,7 +10,7 @@ from .content import ContentService
 class ChecklistService:
     PROCESSING_LIMIT = 15
     SKIPPED_IDS_WORKSHEET_IDX = 1
-    CLEAR_SKIPPED_IDS_AT_COUNT = 200
+    CLEAR_SKIPPED_IDS_AT_COUNT = 100
 
     def __init__(
         self,
@@ -32,7 +32,7 @@ class ChecklistService:
         )
 
     @staticmethod
-    def same_difference(checklist, publication):
+    def _same_difference(checklist, publication):
         comparison_map = [
             ("isoObsDate", "datetime"),
             ("loc.name", "metadata.location"),
@@ -62,7 +62,7 @@ class ChecklistService:
 
             if item["subId"] in excluded_ids or pydash.find(
                 publications,
-                lambda p: self.same_difference(item, p),
+                lambda p: self._same_difference(item, p),
             ):
                 continue
 
