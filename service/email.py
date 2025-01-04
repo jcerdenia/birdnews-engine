@@ -31,7 +31,7 @@ class EmailService:
 
         titles = [a["title"] for a in articles]
         intro = self.ai.write_campaign_intro(titles) or self.description
-        subject = f"{self.title}: {now().strftime('%B %d, %Y')}"
+        subject = f"{self.title}: {now().strftime('%B %-d, %Y')}"
 
         digest = []
         for art in articles:
