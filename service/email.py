@@ -39,7 +39,7 @@ class EmailService:
 
         digest = []
         for art in articles:
-            url = f"https://ph.birdnews.xyz/{art['slug']}"
+            url = f"{self.config['site_url']}/{art['slug']}"
             ele = div()(strong()(a(href=url)(art["title"])), p()(art["lead"]))
             digest.append(str(ele))
 
