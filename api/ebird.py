@@ -4,15 +4,20 @@ from misc.decorators import handle_error
 
 
 class EBirdAPI:
-    CHECKLISTS_URL = "https://api.ebird.org/v2/product/lists/PH"
+    CHECKLISTS_BASE_URL = "https://api.ebird.org/v2/product/lists"
 
-    def __init__(self, api_key):
+    def __init__(self, api_key, region_code):
         self.headers = {"x-ebirdapitoken": api_key}
+        self.region_code = region_code
+
+    @property
+    def checklists_url(self):
+        return f"{self.CHECKLISTS_BASE_URL}/{self.region_code}"
 
     @handle_error
     def get_recent_checklists(self, max_results=200):
         response = requests.get(
-            self.CHECKLISTS_URL,
+            self.checklists_url,
             params={"maxResults": max_results},
             headers=self.headers,
         )

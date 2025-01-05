@@ -8,7 +8,10 @@ from .sheets import SheetsAPI
 
 brevo_api = BrevoAPI(os.getenv("BREVO_API_KEY"))
 
-ebird_api = EBirdAPI(os.getenv("EBIRD_API_KEY"))
+ebird_api = EBirdAPI(
+    os.getenv("EBIRD_API_KEY"),
+    os.getenv("EBIRD_REGION_CODE"),
+)
 
 groq_api = GroqAPI(os.getenv("GROQ_API_KEY"))
 
