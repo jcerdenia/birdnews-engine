@@ -2,7 +2,6 @@ from api import GroqAPI, SheetsAPI
 
 
 class AIService:
-    PROMPT_WORKSHEET_IDX = 0
     KEY_ARTICLE = "ARTICLE"
     KEY_CAMPAIGN = "CAMPAIGN"
 
@@ -12,12 +11,14 @@ class AIService:
         self,
         groq_api: GroqAPI,
         sheets_api: SheetsAPI,
+        worksheet_idx: int,
     ):
         self.groq = groq_api
         self.sheets = sheets_api
+        self.worksheet_idx = worksheet_idx
 
     def _set_prompt_map(self):
-        prompts = self.sheets.read(self.PROMPT_WORKSHEET_IDX)
+        prompts = self.sheets.read(self.worksheet_idx)
         self.prompt_map = {k: v for k, v in prompts}
 
     def _get_prompt(self, key, data):

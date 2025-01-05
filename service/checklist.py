@@ -9,7 +9,6 @@ from .content import ContentService
 
 class ChecklistService:
     PROCESSING_LIMIT = 15
-    SKIPPED_IDS_WORKSHEET_IDX = 1
     CLEAR_SKIPPED_IDS_AT_COUNT = 100
 
     def __init__(
@@ -18,11 +17,13 @@ class ChecklistService:
         ebird_scraper: EBirdScraper,
         sheets_api: SheetsAPI,
         content_service: ContentService,
+        worksheet_idx: int,
     ):
         self.ebird_api = ebird_api
         self.ebird_scraper = ebird_scraper
         self.sheets = sheets_api
         self.content = content_service
+        self.worksheet_idx = worksheet_idx
 
     @staticmethod
     def is_duplicate(checklist1, checklist2):
@@ -49,9 +50,9 @@ class ChecklistService:
         publications = self.content.get_published_data_from_last_24h()
         processed_ids = [pydash.get(item, "metadata.id") for item in publications]
 
-        skipped_ids = self.sheets.read(self.SKIPPED_IDS_WORKSHEET_IDX, True)
+        skipped_ids = self.sheets.read(self.worksheet_idx, True)
         if len(skipped_ids) >= self.CLEAR_SKIPPED_IDS_AT_COUNT:
-            self.sheets.clear(self.SKIPPED_IDS_WORKSHEET_IDX)
+            self.sheets.clear(self.worksheet_idx)
 
         excluded_ids = list(set(processed_ids + skipped_ids))
         checklist_ids = []
@@ -71,7 +72,7 @@ class ChecklistService:
         return list(reversed(checklist_ids))[:limit]
 
     def mark_skipped(self, checklist_ids):
-        self.sheets.append(self.SKIPPED_IDS_WORKSHEET_IDX, checklist_ids)
+        self.sheets.append(self.worksheet_idx, checklist_ids)
 
     def get_checklist_detail(self, checklist_id):
         return self.ebird_scraper.get_checklist_detail(checklist_id)

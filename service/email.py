@@ -6,25 +6,26 @@ from service import AIService, ContentService
 
 
 class EmailService:
-    CONFIG_WORKSHEET_IDX = 2
-
     def __init__(
         self,
-        recipient_list_id: int,
         brevo_api: BrevoAPI,
         sheets_api: SheetsAPI,
         ai_service: AIService,
         content_service: ContentService,
+        recipient_list_id: int,
+        worksheet_idx: int,
     ):
-        self.recipient_list_id = recipient_list_id
         self.brevo = brevo_api
         self.sheets = sheets_api
         self.ai = ai_service
         self.content = content_service
+        self.recipient_list_id = recipient_list_id
+        self.worksheet_idx = worksheet_idx
+
         self.config = None
 
     def _set_config(self):
-        if items := self.sheets.read(self.CONFIG_WORKSHEET_IDX):
+        if items := self.sheets.read(self.worksheet_idx):
             self.config = {k.lower(): int(v) if v.isdigit() else v for k, v in items}
 
     def _prepare_data(self):
@@ -62,11 +63,14 @@ class EmailService:
         }
 
     def run_campaign(self):
-        if not self.config:
-            self._set_config()
+        try:
+            if not self.config:
+                self._set_config()
 
-        data = self._prepare_data()
-        if campaign_id := self.brevo.create_email_campaign(data):
-            return self.brevo.send_email_campaign(campaign_id)
+            data = self._prepare_data()
+            if campaign_id := self.brevo.create_email_campaign(data):
+                return self.brevo.send_email_campaign(campaign_id)
+        except Exception as e:
+            print("Failed to run campaign:", e)
 
         return False
