@@ -1,4 +1,3 @@
-import os
 from datetime import date
 
 import requests
@@ -9,9 +8,8 @@ from misc.decorators import handle_error
 class SanityAPI:
     DATASET = "production"
 
-    def __init__(self):
-        self.project_id = os.getenv("SANITY_PROJECT_ID")
-        token = os.getenv("SANITY_API_KEY")
+    def __init__(self, project_id, token):
+        self.project_id = project_id
         self.headers = {"Authorization": f"Bearer {token}"}
 
     @property

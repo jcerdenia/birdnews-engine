@@ -1,14 +1,12 @@
-import os
-
 import brevo_python
 
 from misc.decorators import handle_error
 
 
 class BrevoAPI:
-    def __init__(self):
+    def __init__(self, api_key):
         self.config = brevo_python.Configuration()
-        self.config.api_key["api-key"] = os.getenv("BREVO_API_KEY")
+        self.config.api_key["api-key"] = api_key
         self.client = brevo_python.ApiClient(self.config)
         self.emails = brevo_python.EmailCampaignsApi(self.client)
 
