@@ -38,6 +38,7 @@ GROQ_API_KEY=
 SANITY_PROJECT_ID=
 SANITY_API_KEY=
 BREVO_API_KEY=
+BREVO_RECIPIENT_LIST_ID=
 
 # Path to .json file containing service account credentials
 GOOGLE_APPLICATION_CREDENTIALS= 
