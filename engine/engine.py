@@ -58,7 +58,7 @@ class Engine:
             color = Colors.green if len(articles) else Colors.yellow
             print(color("Published", len(articles), "articles."))
 
-        if now().hour == int(os.getenv("EMAIL_SEND_HOUR", 12)):
+        if now().hour == self.emails.config.get("send_hour", 12):
             self.send_newsletter()
 
     def send_newsletter(self):

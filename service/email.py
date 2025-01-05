@@ -1,28 +1,31 @@
-import os
-
 from htbuilder import a, body, div, html, p, strong
 
-from api.brevo import BrevoAPI
+from api import BrevoAPI, SheetsAPI
 from misc.utils import now
 from service import AIService, ContentService
 
 
 class EmailService:
+    CONFIG_WORKSHEET_IDX = 2
+
     def __init__(
         self,
+        recipient_list_id: int,
         brevo_api: BrevoAPI,
+        sheets_api: SheetsAPI,
         ai_service: AIService,
         content_service: ContentService,
     ):
+        self.recipient_list_id = recipient_list_id
         self.brevo = brevo_api
+        self.sheets = sheets_api
         self.ai = ai_service
         self.content = content_service
+        self.config = None
 
-        self.title = "Daily Digest"
-        self.from_name = "PH Bird News"
-        self.from_email = os.getenv("BREVO_SENDER_EMAIL_ADDRESS")
-        self.recipient_list_id = int(os.getenv("BREVO_RECIPIENT_LIST_ID"))
-        self.description = "Birding highlights from the last 24 hours."
+    def _set_config(self):
+        if items := self.sheets.read(self.CONFIG_WORKSHEET_IDX):
+            self.config = {k.lower(): int(v) if v.isdigit() else v for k, v in items}
 
     def _prepare_data(self):
         articles = self.content.curate_articles(
@@ -30,8 +33,8 @@ class EmailService:
         )
 
         titles = [a["title"] for a in articles]
-        intro = self.ai.write_campaign_intro(titles) or self.description
-        subject = f"{self.title}: {now().strftime('%B %-d, %Y')}"
+        intro = self.ai.write_campaign_intro(titles) or self.config["description"]
+        subject = f"{self.config['title']}: {now().strftime('%B %-d, %Y')}"
 
         digest = []
         for art in articles:
@@ -50,12 +53,18 @@ class EmailService:
             "subject": subject,
             "name": subject,
             "recipients": {"listIds": [self.recipient_list_id]},
-            "sender": {"name": self.from_name, "email": self.from_email},
-            "reply_to": self.from_email,
+            "sender": {
+                "name": self.config["sender_name"],
+                "email": self.config["sender_email"],
+            },
+            "reply_to": self.config["sender_email"],
             "html_content": str(html_content),
         }
 
     def run_campaign(self):
+        if not self.config:
+            self._set_config()
+
         data = self._prepare_data()
         if campaign_id := self.brevo.create_email_campaign(data):
             return self.brevo.send_email_campaign(campaign_id)
