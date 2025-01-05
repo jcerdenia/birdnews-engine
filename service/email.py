@@ -62,14 +62,18 @@ class EmailService:
             "html_content": str(html_content),
         }
 
+    def _send(self):
+        data = self._prepare_data()
+        if campaign_id := self.brevo.create_email_campaign(data):
+            return self.brevo.send_email_campaign(campaign_id)
+
     def run_campaign(self):
         try:
             if not self.config:
                 self._set_config()
 
-            data = self._prepare_data()
-            if campaign_id := self.brevo.create_email_campaign(data):
-                return self.brevo.send_email_campaign(campaign_id)
+            if now().hour == self.config.get("send_hour", 12):
+                return self._send()
         except Exception as e:
             print("Failed to run campaign:", e)
 
