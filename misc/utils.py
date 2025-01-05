@@ -1,9 +1,10 @@
+import os
 import re
 import unicodedata
 from datetime import datetime, timedelta
 from zoneinfo import ZoneInfo
 
-TZ = ZoneInfo("Asia/Manila")
+TZ = ZoneInfo(os.getenv("TZ"))
 
 
 class Colors:

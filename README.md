@@ -31,6 +31,9 @@ The following environment variables are required:
 # Self-defined API token protecting the /run endpoint
 API_TOKEN=
 
+# The engine's time zone, e.g. Asia/Manila
+TZ=
+
 # API keys and secrets to external services
 EBIRD_API_KEY=  
 EBIRD_REGION_CODE=
