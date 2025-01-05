@@ -21,7 +21,7 @@ checklist_service = ChecklistService(
     ebird_scraper=ebird_scraper,
     sheets_api=sheets_api,
     content_service=content_service,
-    worksheet_idx=1,
+    worksheet_idx=2,
 )
 
 email_service = EmailService(
@@ -30,5 +30,5 @@ email_service = EmailService(
     ai_service=ai_service,
     content_service=content_service,
     recipient_list_id=int(os.getenv("BREVO_RECIPIENT_LIST_ID")),
-    worksheet_idx=2,
+    worksheet_idx=1,
 )
