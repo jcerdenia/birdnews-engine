@@ -17,7 +17,7 @@ groq_api = GroqAPI(os.getenv("GROQ_API_KEY"))
 
 sanity_api = SanityAPI(
     project_id=os.getenv("SANITY_PROJECT_ID"),
-    api_key=os.getenv("SANITY_API_KEY"),
+    token=os.getenv("SANITY_API_KEY"),
 )
 
 sheets_api = SheetsAPI(os.getenv("SPREADSHEET_ID"))
