@@ -142,16 +142,19 @@ class EBirdScraper(BaseScraper):
     def _parse_general_details(self, ele):
         return self._parse(ele, self.general_detail_parsers)
 
-    def _scrape_checklist(self, content):
+    def _scrape_checklist(self, content, complete_only):
         soup = self._scrape(content)
 
         checklist_type = self._parse_checklist_type(soup)
-        if checklist_type.lower() != self.EFFORT_COMPLETE:
+        if complete_only and checklist_type.lower() != self.EFFORT_COMPLETE:
             return None
 
         primary_details = self._parse_primary_details(soup)
         effort_details = self._parse_effort_details(soup)
         general_details = self._parse_general_details(soup)
+
+        if not complete_only:
+            effort_details["checklist_type"] = checklist_type
 
         return {
             **primary_details,
@@ -165,9 +168,9 @@ class EBirdScraper(BaseScraper):
         return response.content, url
 
     @handle_error
-    def get_checklist_detail(self, checklist_id):
+    def get_checklist_detail(self, checklist_id, complete_only=True):
         content, url = self._get_checklist_page(checklist_id)
-        result = self._scrape_checklist(content)
+        result = self._scrape_checklist(content, complete_only)
 
         if isinstance(result, dict):
             result.update(source=url, id=checklist_id)
