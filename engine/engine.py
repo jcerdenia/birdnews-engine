@@ -1,6 +1,4 @@
-import os
-
-from misc.utils import Colors, now
+from misc.utils import Colors
 from service import AIService, ChecklistService, ContentService, EmailService
 
 
@@ -17,8 +15,7 @@ class Engine:
         self.content = content_service
         self.emails = email_service
 
-    def run(self):
-        print("Starting engine...")
+    def _get_checklists(self):
         ids = self.checklists.get_checklist_ids()
 
         total = len(ids)
@@ -43,7 +40,11 @@ class Engine:
         self.checklists.mark_skipped(skipped_checklist_ids)
         print("Got", len(checklists), "complete checklists.")
 
+        return checklists
+
+    def _write_articles(self, checklists):
         articles = []
+
         for i, data in enumerate(checklists, 1):
             id = data.pop("id")
             source = data.pop("source")
@@ -54,9 +55,20 @@ class Engine:
 
             articles.append(data)
 
-        if articles and self.content.publish(*articles):
+        return articles
+
+    def _publish_articles(self, articles):
+        if self.content.publish(*articles):
             color = Colors.green if len(articles) else Colors.yellow
             print(color("Published", len(articles), "articles."))
+
+    def run(self):
+        print("Starting engine...")
+
+        checklists = self._get_checklists()
+
+        if articles := self._write_articles(checklists):
+            self._publish_articles(articles)
 
         if self.emails.run_campaign():
             print(Colors.green("Sent newsletter."))
