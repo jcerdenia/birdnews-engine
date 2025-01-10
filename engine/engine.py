@@ -65,10 +65,9 @@ class Engine:
     def run(self):
         print("Starting engine...")
 
-        checklists = self._get_checklists()
-
-        if articles := self._write_articles(checklists):
-            self._publish_articles(articles)
+        if checklists := self._get_checklists():
+            if articles := self._write_articles(checklists):
+                self._publish_articles(articles)
 
         if self.emails.run_campaign():
             print(Colors.green("Sent newsletter."))
