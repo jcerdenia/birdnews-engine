@@ -44,7 +44,7 @@ class EmailService:
             digest.append(str(ele))
 
         html_content = html()(
-            body(style="text-align: left;")(
+            body(style="text-align: left; max-width: 600px; margin: 0 auto;")(
                 div()(*[p()(par.strip()) for par in intro.split("\n") if len(par)]),
                 div()("\n".join(digest)),
             )
@@ -67,12 +67,12 @@ class EmailService:
         if campaign_id := self.brevo.create_email_campaign(data):
             return self.brevo.send_email_campaign(campaign_id)
 
-    def run_campaign(self):
+    def run_campaign(self, force=False):
         try:
             if not self.config:
                 self._set_config()
 
-            if now().hour == self.config.get("send_hour", 12):
+            if force or now().hour == self.config.get("send_hour"):
                 return self._send()
         except Exception as e:
             print("Failed to run campaign:", e)
