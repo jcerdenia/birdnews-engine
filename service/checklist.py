@@ -53,10 +53,8 @@ class ChecklistService:
         skipped_ids = self.sheets.read(self.worksheet_idx, True)
         if len(skipped_ids) >= self.CLEAR_SKIPPED_IDS_AT_COUNT:
             self.sheets.clear(self.worksheet_idx)
-            self.sheets.append(
-                self.worksheet_idx,
-                skipped_ids[-(self.CLEAR_SKIPPED_IDS_AT_COUNT / 2) :],
-            )
+            recent_skipped_ids = skipped_ids[-(self.CLEAR_SKIPPED_IDS_AT_COUNT / 2) :]
+            self.sheets.append(self.worksheet_idx, recent_skipped_ids)
 
         excluded_ids = list(set(processed_ids + skipped_ids))
         checklist_ids = []
