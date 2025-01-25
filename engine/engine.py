@@ -50,10 +50,9 @@ class Engine:
             source = data.pop("source")
 
             print(f"[{i}/{len(checklists)}]", f"{id}: writing article.")
-            content = self.ai.write_article(data)
-            data.update(content=content, source=source, id=id)
-
-            articles.append(data)
+            if content := self.ai.write_article(data):
+                data.update(content=content, source=source, id=id)
+                articles.append(data)
 
         return articles
 
