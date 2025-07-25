@@ -8,9 +8,10 @@ from misc.decorators import require_auth
 
 app = Flask(__name__)
 
+config = Config.from_env()
+
 
 def main():
-    config = Config.from_env()
     engine = Engine.from_config(config)
     engine.run()
 
@@ -26,7 +27,7 @@ def ping():
 
 
 @app.route("/run", methods=["POST"])
-@require_auth
+@require_auth(config)
 def run():
     thread = threading.Thread(target=main)
     thread.start()

@@ -1,4 +1,3 @@
-import os
 from functools import wraps
 
 from flask import abort, request
@@ -15,14 +14,17 @@ def handle_error(func):
     return wrapper
 
 
-def require_auth(f):
-    @wraps(f)
-    def decorated_function(*args, **kwargs):
-        api_token = request.headers.get("X-API-TOKEN")
+def require_auth(config):
+    def decorator(f):
+        @wraps(f)
+        def decorated_function(*args, **kwargs):
+            api_token = request.headers.get("X-API-TOKEN")
 
-        if not api_token or api_token != os.getenv("API_TOKEN"):
-            abort(401)  # Unauthorized
+            if not api_token or api_token != config.API_TOKEN:
+                abort(401)  # Unauthorized
 
-        return f(*args, **kwargs)
+            return f(*args, **kwargs)
 
-    return decorated_function
+        return decorated_function
+
+    return decorator
