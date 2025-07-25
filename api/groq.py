@@ -19,3 +19,7 @@ class GroqAPI:
         )
 
         return chat_completion.choices[0].message.content
+
+    @classmethod
+    def from_config(cls, config):
+        return cls(api_key=config.GROQ_API_KEY)

@@ -18,12 +18,14 @@ class ChecklistService:
         sheets_api: SheetsAPI,
         content_service: ContentService,
         worksheet_idx: int,
+        tz: str,
     ):
         self.ebird_api = ebird_api
         self.ebird_scraper = ebird_scraper
         self.sheets = sheets_api
         self.content = content_service
         self.worksheet_idx = worksheet_idx
+        self.tz = tz
 
     @staticmethod
     def is_duplicate(checklist1, checklist2):
@@ -60,7 +62,7 @@ class ChecklistService:
         checklist_ids = []
 
         for item in data:
-            if not is_from_last_24h(item["isoObsDate"]):
+            if not is_from_last_24h(item["isoObsDate"], self.tz):
                 break
 
             if item["subId"] in excluded_ids or pydash.find(
@@ -78,3 +80,14 @@ class ChecklistService:
 
     def get_checklist_detail(self, checklist_id):
         return self.ebird_scraper.get_checklist_detail(checklist_id)
+
+    @classmethod
+    def from_config(cls, config):
+        return cls(
+            ebird_api=EBirdAPI.from_config(config),
+            ebird_scraper=EBirdScraper.from_config(config),
+            sheets_api=SheetsAPI.from_config(config),
+            content_service=ContentService.from_config(config),
+            worksheet_idx=config.CHECKLIST_WORKSHEET_IDX,
+            tz=config.TZ,
+        )

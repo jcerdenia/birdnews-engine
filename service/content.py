@@ -129,3 +129,7 @@ class ContentService:
     def delete_by_id(self, *args):
         body = {"mutations": [{self.KEY_DELETE: {"id": id}}] for id in args}
         return self.sanity.mutate(body)
+
+    @classmethod
+    def from_config(cls, config):
+        return cls(sanity_api=SanityAPI.from_config(config))

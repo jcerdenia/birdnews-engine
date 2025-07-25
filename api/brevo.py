@@ -22,3 +22,7 @@ class BrevoAPI:
         self.emails.send_email_campaign_now(campaign_id)
 
         return True
+
+    @classmethod
+    def from_config(cls, config):
+        return cls(api_key=config.BREVO_API_KEY)

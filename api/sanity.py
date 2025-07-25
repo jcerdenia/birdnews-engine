@@ -36,3 +36,10 @@ class SanityAPI:
         )
 
         return response.json()
+
+    @classmethod
+    def from_config(cls, config):
+        return cls(
+            project_id=config.SANITY_PROJECT_ID,
+            token=config.SANITY_API_KEY,
+        )

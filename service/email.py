@@ -14,6 +14,7 @@ class EmailService:
         content_service: ContentService,
         recipient_list_id: int,
         worksheet_idx: int,
+        tz: str,
     ):
         self.brevo = brevo_api
         self.sheets = sheets_api
@@ -21,6 +22,7 @@ class EmailService:
         self.content = content_service
         self.recipient_list_id = recipient_list_id
         self.worksheet_idx = worksheet_idx
+        self.tz = tz
 
         self.config = None
 
@@ -35,7 +37,7 @@ class EmailService:
 
         titles = [a["title"] for a in articles]
         intro = self.ai.write_campaign_intro(titles) or self.config["description"]
-        subject = f"{self.config['title']}: {now().strftime('%B %-d, %Y')}"
+        subject = f"{self.config['title']}: {now(self.tz).strftime('%B %-d, %Y')}"
 
         digest = []
         for art in articles:
@@ -72,9 +74,21 @@ class EmailService:
             if not self.config:
                 self._set_config()
 
-            if force or now().hour == self.config.get("send_hour"):
+            if force or now(self.tz).hour == self.config.get("send_hour"):
                 return self._send()
         except Exception as e:
             print("Failed to run campaign:", e)
 
         return False
+
+    @classmethod
+    def from_config(cls, config):
+        return cls(
+            brevo_api=BrevoAPI.from_config(config),
+            sheets_api=SheetsAPI.from_config(config),
+            ai_service=AIService.from_config(config),
+            content_service=ContentService.from_config(config),
+            recipient_list_id=config.BREVO_RECIPIENT_LIST_ID,
+            worksheet_idx=config.EMAIL_WORKSHEET_IDX,
+            tz=config.TZ,
+        )

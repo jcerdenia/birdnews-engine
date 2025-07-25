@@ -1,3 +1,3 @@
 from .ebird import EBirdScraper
 
-ebird_scraper = EBirdScraper()
+__all__ = ["EBirdScraper"]

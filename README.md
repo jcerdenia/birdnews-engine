@@ -67,10 +67,14 @@ curl -X POST http://localhost:{PORT}/run \
 -H "X-API-TOKEN: {API_TOKEN}"
 ```
 
-Alternatively, simply run `main()`.
+Alternatively, create an instance of `Engine` and call `run`.
 
 ```
-from engine import main
+from config import Config
+from engine import Engine
 
-main()
+config = Config.from_env()
+engine = Engine.from_config(config)
+engine.run()
+
 ```

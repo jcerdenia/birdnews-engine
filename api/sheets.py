@@ -41,3 +41,7 @@ class SheetsAPI:
         worksheet = self._get_worksheet(worksheet_idx)
         column_data = [[i] for i in data] if flat else data
         return worksheet.append_rows(column_data)
+
+    @classmethod
+    def from_config(cls, config):
+        return cls(spreadsheet_id=config.SPREADSHEET_ID)

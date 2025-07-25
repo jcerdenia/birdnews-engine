@@ -23,3 +23,10 @@ class EBirdAPI:
         )
 
         return response.json()
+
+    @classmethod
+    def from_config(cls, config):
+        return cls(
+            api_key=config.EBIRD_API_KEY,
+            region_code=config.EBIRD_REGION_CODE,
+        )

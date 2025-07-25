@@ -15,6 +15,8 @@ class Engine:
         self.content = content_service
         self.emails = email_service
 
+        print(Colors.green("Engine created."))
+
     def _get_checklists(self):
         ids = self.checklists.get_checklist_ids()
 
@@ -70,3 +72,12 @@ class Engine:
 
         if self.emails.run_campaign():
             print(Colors.green("Sent newsletter."))
+
+    @classmethod
+    def from_config(cls, config):
+        return cls(
+            ai_service=AIService.from_config(config),
+            checklist_service=ChecklistService.from_config(config),
+            content_service=ContentService.from_config(config),
+            email_service=EmailService.from_config(config),
+        )

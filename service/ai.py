@@ -34,3 +34,11 @@ class AIService:
     def write_campaign_intro(self, titles):
         prompt = self._get_prompt(self.KEY_CAMPAIGN, titles)
         return self.groq.chat(prompt)
+
+    @classmethod
+    def from_config(cls, config):
+        return cls(
+            groq_api=GroqAPI.from_config(config),
+            sheets_api=SheetsAPI.from_config(config),
+            worksheet_idx=config.PROMPT_WORKSHEET_IDX,
+        )

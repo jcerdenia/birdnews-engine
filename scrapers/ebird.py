@@ -176,3 +176,7 @@ class EBirdScraper(BaseScraper):
             result.update(source=url, id=checklist_id)
 
         return result
+
+    @classmethod
+    def from_config(cls, config=None):
+        return cls()
