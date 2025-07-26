@@ -1,7 +1,5 @@
 import re
 import unicodedata
-from datetime import datetime, timedelta
-from zoneinfo import ZoneInfo
 
 
 class Colors:
@@ -19,17 +17,3 @@ def slugify(text, separator="-"):
     text = re.sub(r"[-\s]+", separator, text).strip(separator)
 
     return text
-
-
-def is_from_last_24h(iso_datetime_str, tz):
-    tzinfo = ZoneInfo(tz)
-    format = "%Y-%m-%d %H:%M"
-
-    dt_obj = datetime.strptime(iso_datetime_str, format).replace(tzinfo=tzinfo)
-    cutoff = datetime.now(tzinfo) - timedelta(hours=24)
-
-    return dt_obj > cutoff
-
-
-def now(tz):
-    return datetime.now(ZoneInfo(tz))

@@ -126,8 +126,17 @@ class ContentService:
         return self.sanity.mutate(body)
 
     @handle_error
-    def delete_by_id(self, *args):
-        body = {"mutations": [{self.KEY_DELETE: {"id": id}}] for id in args}
+    def delete_old_articles(self):
+        # Get all articles older than 240 days
+        query = """
+        *[_type == 'article' && dateTime(_createdAt) < dateTime(now()) - 60*60*24*240] 
+        | order(_createdAt desc) {
+            _id,
+        }
+        """
+
+        articles = self.sanity.query(query)["result"]
+        body = {"mutations": [{self.KEY_DELETE: {"id": a["_id"]}} for a in articles]}
         return self.sanity.mutate(body)
 
     @classmethod

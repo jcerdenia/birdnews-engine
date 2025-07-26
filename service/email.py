@@ -1,7 +1,7 @@
 from htbuilder import a, body, div, html, p, strong
 
 from api import BrevoAPI, SheetsAPI
-from misc.utils import now
+from misc.clock import Clock
 from service import AIService, ContentService
 
 
@@ -14,7 +14,7 @@ class EmailService:
         content_service: ContentService,
         recipient_list_id: int,
         worksheet_idx: int,
-        tz: str,
+        clock: Clock,
     ):
         self.brevo = brevo_api
         self.sheets = sheets_api
@@ -22,7 +22,7 @@ class EmailService:
         self.content = content_service
         self.recipient_list_id = recipient_list_id
         self.worksheet_idx = worksheet_idx
-        self.tz = tz
+        self.clock = clock
 
         self.config = None
 
@@ -37,7 +37,7 @@ class EmailService:
 
         titles = [a["title"] for a in articles]
         intro = self.ai.write_campaign_intro(titles) or self.config["description"]
-        subject = f"{self.config['title']}: {now(self.tz).strftime('%B %-d, %Y')}"
+        subject = f"{self.config['title']}: {self.clock.now().strftime('%B %-d, %Y')}"
 
         digest = []
         for art in articles:
@@ -74,7 +74,7 @@ class EmailService:
             if not self.config:
                 self._set_config()
 
-            if force or now(self.tz).hour == self.config.get("send_hour"):
+            if force or self.clock.now().hour == self.config.get("send_hour"):
                 return self._send()
         except Exception as e:
             print("Failed to run campaign:", e)
@@ -90,5 +90,5 @@ class EmailService:
             content_service=ContentService.from_config(config),
             recipient_list_id=config.BREVO_RECIPIENT_LIST_ID,
             worksheet_idx=config.EMAIL_WORKSHEET_IDX,
-            tz=config.TZ,
+            clock=Clock.from_config(config),
         )

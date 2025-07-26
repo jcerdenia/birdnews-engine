@@ -1,3 +1,4 @@
+from misc.clock import Clock
 from misc.utils import Colors
 from service import AIService, ChecklistService, ContentService, EmailService
 
@@ -9,11 +10,13 @@ class Engine:
         checklist_service: ChecklistService,
         content_service: ContentService,
         email_service: EmailService,
+        clock: Clock,
     ):
         self.ai = ai_service
         self.checklists = checklist_service
         self.content = content_service
         self.emails = email_service
+        self.clock = clock
 
         print(Colors.green("Engine created."))
 
@@ -73,6 +76,9 @@ class Engine:
         if self.emails.run_campaign():
             print(Colors.green("Sent newsletter."))
 
+        if self.clock.is_start_of_week():
+            self.content.delete_old_articles()
+
     @classmethod
     def from_config(cls, config):
         return cls(
@@ -80,4 +86,5 @@ class Engine:
             checklist_service=ChecklistService.from_config(config),
             content_service=ContentService.from_config(config),
             email_service=EmailService.from_config(config),
+            clock=Clock.from_config(config),
         )

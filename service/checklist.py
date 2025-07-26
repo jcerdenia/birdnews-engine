@@ -1,7 +1,7 @@
 import pydash
 
 from api import EBirdAPI, SheetsAPI
-from misc.utils import is_from_last_24h
+from misc.clock import Clock
 from scrapers import EBirdScraper
 
 from .content import ContentService
@@ -18,14 +18,14 @@ class ChecklistService:
         sheets_api: SheetsAPI,
         content_service: ContentService,
         worksheet_idx: int,
-        tz: str,
+        clock: Clock,
     ):
         self.ebird_api = ebird_api
         self.ebird_scraper = ebird_scraper
         self.sheets = sheets_api
         self.content = content_service
         self.worksheet_idx = worksheet_idx
-        self.tz = tz
+        self.clock = clock
 
     @staticmethod
     def is_duplicate(checklist1, checklist2):
@@ -62,7 +62,7 @@ class ChecklistService:
         checklist_ids = []
 
         for item in data:
-            if not is_from_last_24h(item["isoObsDate"], self.tz):
+            if not self.clock.is_from_last_24h(item["isoObsDate"]):
                 break
 
             if item["subId"] in excluded_ids or pydash.find(
@@ -89,5 +89,5 @@ class ChecklistService:
             sheets_api=SheetsAPI.from_config(config),
             content_service=ContentService.from_config(config),
             worksheet_idx=config.CHECKLIST_WORKSHEET_IDX,
-            tz=config.TZ,
+            clock=Clock.from_config(config),
         )
