@@ -76,6 +76,7 @@ class EBirdScraper(BaseScraper):
         observations = []
 
         for ele in soup.find_all("section", class_="Observation"):
+            code = ele.get("id")
             species = ele.find("span", class_="Heading-main").get_text()
             if " sp." in species:
                 species = f"unidentified {species}".replace(" sp.", "").strip()
@@ -91,6 +92,7 @@ class EBirdScraper(BaseScraper):
             observations.append(
                 {
                     "species": species,
+                    "code": code,
                     "count": int(count) if count.isdigit() else count,
                     **({"comment": comment} if comment else {}),
                 }

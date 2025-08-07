@@ -1,3 +1,5 @@
+from copy import deepcopy
+
 from misc.clock import Clock
 from misc.utils import Colors
 from service import AIService, ChecklistService, ContentService, EmailService
@@ -51,12 +53,18 @@ class Engine:
         articles = []
 
         for i, data in enumerate(checklists, 1):
-            id = data.pop("id")
-            source = data.pop("source")
+            metadata = deepcopy(data)
 
-            print(f"[{i}/{len(checklists)}]", f"{id}: writing article.")
-            if content := self.ai.write_article(data):
-                data.update(content=content, source=source, id=id)
+            # Remove metadata that is not needed for the article
+            del metadata["id"]
+            del metadata["source"]
+
+            for observation in metadata["observations"]:
+                del observation["code"]
+
+            print(f"[{i}/{len(checklists)}]", f"{data['id']}: writing article.")
+            if content := self.ai.write_article(metadata):
+                data.update(content=content)
                 articles.append(data)
 
         return articles
